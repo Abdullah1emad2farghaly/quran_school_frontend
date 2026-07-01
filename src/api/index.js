@@ -1,0 +1,12 @@
+export * as studentsApi from "./services/studentsService";
+export * as parentsApi from "./services/parentsService";
+export * as teachersApi from "./services/teachersService";
+export * as groupsApi from "./services/groupsService";
+export * as attendanceApi from "./services/attendanceService";
+export * as memorizationApi from "./services/memorizationService";
+export * as competitionsApi from "./services/competitionsService";
+export * as subscriptionsApi from "./services/subscriptionsService";
+export * as collectorsApi from "./services/collectorsService";
+export * as usersApi from "./services/usersService";
+export * as dashboardApi from "./services/dashboardService";
+export * as settingsApi from "./services/settingsService";

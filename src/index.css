@@ -1,0 +1,23 @@
+/* src/index.css */
+@import url("https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  font-family: "Cairo", sans-serif;
+}
+
+@layer components {
+  .form-input {
+    @apply w-full rounded-xl border border-gray-200 px-3.5 py-2.5 text-sm
+      focus:outline-none focus:ring-2;
+  }
+}
+
+/* src/index.css — this must exist */
+.skeleton-surface {
+  background: linear-gradient(90deg, #eeece5 25%, #e3e0d6 37%, #eeece5 63%);
+  background-size: 800px 100%;  /* ← must be fixed px width, not % */
+}
