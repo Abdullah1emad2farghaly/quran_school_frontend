@@ -52,23 +52,13 @@ export async function getStudentProgress(studentId) {
   return data;
 }
 
-export async function createMemorizationRecord(payload) {
-  if (USE_MOCK) {
-    return mockRequest(() => {
-      const student = MOCK_STUDENTS.find((s) => s.id === payload.studentId);
-      const newRecord = {
-        id: generateId("MEM"),
-        date: new Date().toISOString().slice(0, 10),
-        studentName: student?.name,
-        groupId: student?.groupId,
-        ...payload,
-      };
-      _records = [newRecord, ..._records];
-      return { data: newRecord };
-    });
+export async function createMemorizationRecord(studentId, groupId,payload) {
+  try{
+    const res = await api.post(`/memorization/group/${groupId}/student/${studentId}`, payload);
+    return res.data.data;
+  }catch(error){
+    throw error.response ? error.response.data : error;
   }
-  const { data } = await httpClient.post("/memorization", payload);
-  return data;
 }
 
 export async function getMemorizationReport({ groupId } = {}) {
@@ -100,7 +90,7 @@ export const createMemorizationAssignment = async (groupId, payload) => {
 
 export const createRevisionAssignment = async (groupId, payload) => {
   try {
-    const res = await api.post(`memorization/assignments/${groupId}`, payload);
+    const res = await api.post(`memorization/revisions/${groupId}`, payload);
     return res.data;
   }catch(error){
     console.log(error.response.data)
