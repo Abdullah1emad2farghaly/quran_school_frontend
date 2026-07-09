@@ -86,3 +86,33 @@ export async function getMemorizationReport({ groupId } = {}) {
   const { data } = await httpClient.get("/memorization/report", { params: { groupId } });
   return data;
 }
+
+
+export const createMemorizationAssignment = async (groupId, payload) => {
+  try {
+    const res = await api.post(`memorization/assignments/${groupId}`, payload);
+    return res.data;
+  }catch(error){
+    console.log(error.response.data)
+    throw error.response ? error.response.data : error;
+  }
+};
+
+export const createRevisionAssignment = async (groupId, payload) => {
+  try {
+    const res = await api.post(`memorization/assignments/${groupId}`, payload);
+    return res.data;
+  }catch(error){
+    console.log(error.response.data)
+    throw error.response ? error.response.data : error;
+  }
+};
+
+// export const getAssignments = async (sessionId) => {
+//   try {
+//     const res = await api.get(`memorization/assignments/${sessionId}`);
+//     return res.data.data;
+//   }catch(error){
+//     throw error.response ? error.response.data : error;
+//   }
+// };

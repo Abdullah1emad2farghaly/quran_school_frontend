@@ -6,6 +6,7 @@ import { ConfirmProvider } from "./context/ConfirmContext";
 
 import AdminRoutes from "./routes/AdminRoutes";
 import AuthRoute from "./routes/AuthRoute";
+import TeacherRoutes from "./routes/TeacherRoutes";
 
 export default function App() {
   return (
@@ -13,8 +14,10 @@ export default function App() {
       <ToastProvider>
         <ConfirmProvider>
           <BrowserRouter>
-              <AdminRoutes/>
               <AuthRoute/>
+
+              <AdminRoutes/>
+              <TeacherRoutes/>
           </BrowserRouter>
         </ConfirmProvider>
       </ToastProvider>

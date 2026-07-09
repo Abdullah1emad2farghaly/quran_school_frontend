@@ -56,7 +56,7 @@ export async function updateTeacher(id, payload) {
     const res = await api.patch(`/users/${id}`, payload);
     return res.data.data
   }catch(error){
-    console.log(error.response?.data)
+    // console.log(error.response?.data)
     throw error.response?.data
   }
 }
@@ -78,4 +78,41 @@ export async function getTeacherGroups(teacherId) {
   }
   const { data } = await httpClient.get(`/teachers/${teacherId}/groups`);
   return data;
+}
+
+export async function getMyGroups (){
+  try {
+    const res = await api.get("/teachers/my-groups")
+    console.log(res.data.data)
+    return res.data.data;
+  }catch(error) {
+    console.log(error.response?.data)
+    throw error.response?.data
+  }
+}
+
+export async function getTeacherStudents(teacherId) {
+
+
+}
+
+export async function getGroupStudents(groupId) {
+  try {
+    const res = await api.get(`/teachers/my-groups/${groupId}`)
+    
+    return res.data.data.data;
+  }catch(error) {
+    console.log(error?.response?.data)
+    throw error?.response.data
+  }
+}
+
+export async function createGroupAttendance(payload) {
+  try {
+    const res = await api.post(`/attendance`, payload)
+    return res.data.data;
+  }catch(error) {
+    console.log(error?.response?.data)
+    throw error?.response.data
+  }
 }
