@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Menu, Search, Bell, Globe, ChevronDown, LogOut, User, CheckCircle2, AlertTriangle } from "lucide-react";
 import { useI18n } from "../../../i18n/I18nContext";
 import Avatar from "../common/Avatar";
+import { useNavigate } from "react-router-dom";
 
 export default function Topbar({ onMenuClick }) {
   const { t, lang, toggleLang } = useI18n();
@@ -10,6 +11,7 @@ export default function Topbar({ onMenuClick }) {
   const [searchValue, setSearchValue] = useState("");
   const notifRef = useRef(null);
   const profileRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const onClick = (e) => {
@@ -104,7 +106,13 @@ export default function Topbar({ onMenuClick }) {
                 {t.topbar.profile}
               </button>
               <div className="h-px bg-line my-1" />
-              <button className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-rose hover:bg-rose-soft transition text-start">
+              <button onClick={()=> {
+                window.localStorage.removeItem('user')
+                window.localStorage.removeItem('token')
+                window.localStorage.removeItem('refreshToken')
+                navigate('/');
+
+              }} className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-rose hover:bg-rose-soft transition text-start">
                 <LogOut size={15} />
                 {t.topbar.logout}
               </button>

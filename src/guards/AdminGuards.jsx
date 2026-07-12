@@ -1,20 +1,18 @@
 import { Navigate, Outlet } from "react-router-dom";
 
-const AuthGuard = () => {
+export default function AdminGuard() {
+
     const token = window.localStorage.getItem('token');
     const user = JSON.parse(window.localStorage.getItem('user'));
     const userRole = user?.role;
 
-    if (token) {
-        if (userRole === "Admin") {
-            return <Navigate to="/admin" replace />;
-        }
+    if (!token) {
+        return <Navigate to="/" replace />;
+    }
+
+    if (userRole !== "Admin") {
         return <Navigate to="/teacher" replace />;
     }
-    
-    <Navigate to={'/'} replace/>
 
     return <Outlet />;
-};
-
-export default AuthGuard;
+}

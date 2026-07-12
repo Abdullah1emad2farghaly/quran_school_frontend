@@ -31,41 +31,44 @@ import UsersRolesPage from "../pages/admin/users/UsersRolesPage";
 import SettingsPage from "../pages/admin/settings/SettingsPage";
 import AdminLayout from '../layouts/AdminLayout';
 import NotFoundPage from '../pages/NotFoundPage';
+import AdminGuards from '../guards/AdminGuards'
 
 
 export default function AdminRoutes() {
     return (
         <Routes>
-            <Route path='/admin' element={<AppShell />}>
-                <Route index element={<DashboardPage />} />
+            <Route element={<AdminGuards />}>
+                <Route path='/admin' element={<AppShell />}>
+                    <Route index element={<DashboardPage />} />
 
-                <Route path="students" element={<StudentsListPage />} />
-                <Route path="students/:studentId" element={<StudentProfilePage />} />
+                    <Route path="students" element={<StudentsListPage />} />
+                    <Route path="students/:studentId" element={<StudentProfilePage />} />
 
-                <Route path="parents" element={<ParentsListPage />} />
-                <Route path="parents/:parentId" element={<ParentProfilePage />} />
+                    <Route path="parents" element={<ParentsListPage />} />
+                    <Route path="parents/:parentId" element={<ParentProfilePage />} />
 
-                <Route path="teachers" element={<TeachersListPage />} />
-                <Route path="teachers/:teacherId" element={<TeacherProfilePage />} />
+                    <Route path="teachers" element={<TeachersListPage />} />
+                    <Route path="teachers/:teacherId" element={<TeacherProfilePage />} />
 
-                <Route path="groups" element={<GroupsListPage />} />
-                <Route path="groups/:groupId" element={<GroupDetailPage />} />
+                    <Route path="groups" element={<GroupsListPage />} />
+                    <Route path="groups/:groupId" element={<GroupDetailPage />} />
 
-                <Route path="attendance" element={<AttendancePage />} />
-                <Route path="memorization" element={<MemorizationPage />} />
+                    <Route path="attendance" element={<AttendancePage />} />
+                    <Route path="memorization" element={<MemorizationPage />} />
 
-                <Route path="competitions" element={<CompetitionsListPage />} />
-                <Route path="competitions/:competitionId" element={<CompetitionDetailPage />} />
+                    <Route path="competitions" element={<CompetitionsListPage />} />
+                    <Route path="competitions/:competitionId" element={<CompetitionDetailPage />} />
 
-                <Route path="subscriptions" element={<SubscriptionsPage />} />
+                    <Route path="subscriptions" element={<SubscriptionsPage />} />
 
-                <Route path="collectors" element={<CollectorsListPage />} />
-                <Route path="collectors/:collectorId" element={<CollectorProfilePage />} />
+                    <Route path="collectors" element={<CollectorsListPage />} />
+                    <Route path="collectors/:collectorId" element={<CollectorProfilePage />} />
 
-                <Route path="users" element={<UsersRolesPage />} />
-                <Route path="settings" element={<SettingsPage />} />
+                    <Route path="users" element={<UsersRolesPage />} />
+                    <Route path="settings" element={<SettingsPage />} />
 
-                <Route path="*" element={<NotFoundPage />} />
+                    <Route path="*" element={<NotFoundPage />} />
+                </Route>
             </Route>
         </Routes>
     )

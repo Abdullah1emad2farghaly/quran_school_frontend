@@ -8,11 +8,6 @@ import { useApp } from '../../../context/AppContext';
 const navItems = [
   { path: '/teacher', label: 'لوحة التحكم', icon: LayoutDashboard },
   { path: '/teacher/groups', label: 'حلقاتي', icon: UsersRound },
-  { path: '/teacher/students', label: 'الطلاب', icon: Users },
-  { path: '/teacher/attendance', label: 'الحضور', icon: ClipboardCheck },
-  { path: '/teacher/memorization', label: 'التسميع', icon: BookOpen },
-  { path: '/teacher/exams', label: 'الاختبارات', icon: FileText },
-  { path: '/teacher/results', label: 'النتائج', icon: Star },
   { path: '/teacher/competitions', label: 'المسابقات', icon: Trophy },
   { path: '/teacher/notifications', label: 'الإشعارات', icon: Bell },
   { path: '/teacher/profile', label: 'الملف الشخصي', icon: User },
