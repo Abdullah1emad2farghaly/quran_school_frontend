@@ -38,7 +38,7 @@ export default function TeacherProfilePage() {
         setLoading(false);
       }
     }).catch((err) => {
-      mounted && setLoading(false); 
+      mounted && setLoading(false);
       console.log(err)
     });
     return () => { mounted = false; };
@@ -48,11 +48,17 @@ export default function TeacherProfilePage() {
     setSaving(true);
     try {
       const res = await teachersApi.updateTeacher(userId, form);
-      setTeacher({...teacher, ...res.data.user});
+      setTeacher({ ...teacher, ...res.data.user });
       toast.success(t.common.saved);
       setEditOpen(false);
     } catch (err) {
-      toast.error(err.message || t.common.somethingWrong);
+      if (Array.isArray(err.msg)) {
+        err.msg.forEach((error) => {
+          toast.error(error.msg[window.localStorage.getItem('academy_lang')])
+        })
+      } else {
+        toast.error(err.msg[window.localStorage.getItem('academy_lang')])
+      }
     } finally {
       setSaving(false);
     }
@@ -66,7 +72,13 @@ export default function TeacherProfilePage() {
       toast.success(t.common.deleted);
       navigate("/teachers");
     } catch (err) {
-      toast.error(err.message || t.common.somethingWrong);
+      if (Array.isArray(err.msg)) {
+        err.msg.forEach((error) => {
+          toast.error(error.msg[window.localStorage.getItem('academy_lang')])
+        })
+      } else {
+        toast.error(err.msg[window.localStorage.getItem('academy_lang')])
+      }
     }
   };
 
@@ -95,7 +107,7 @@ export default function TeacherProfilePage() {
             <Avatar name={teacher.name} size="xl" />
             <div>
               <h1 className="text-xl font-extrabold text-ink">{teacher.name}</h1>
-              <p className="text-sm text-ink-faint mt-0.5">T-{teacher?.id?.toString()?.padStart(4,'0')}</p>
+              <p className="text-sm text-ink-faint mt-0.5">T-{teacher?.id?.toString()?.padStart(4, '0')}</p>
             </div>
           </div>
           <div className="flex items-center gap-2">

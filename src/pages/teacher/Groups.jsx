@@ -4,20 +4,27 @@ import { UsersRound, Users, ClipboardCheck, BookOpen, ChevronLeft } from 'lucide
 import { useApp } from '../../context/AppContext';
 import Badge from '../../components/teacher/ui/Badge';
 import { getMyGroups } from '../../api/services/teachersService';
+import { useToast } from '../../context/ToastContext';
 
 export default function Groups() {
   const { teacher, groups, students } = useApp();
   const navigate = useNavigate();
   const [myGroups, setMyGroups] = useState([]);
+  const toast = useToast()
   // const myGroups = groups.filter(g => teacher.groups.includes(g.id));
-  useEffect(()=>{
-    const myGroups = async ()=> {
-      try{
+  useEffect(() => {
+    const myGroups = async () => {
+      try {
         const res = await getMyGroups();
-        console.log(res)
         setMyGroups(res);
-      }catch(error){
-        console.log(error);
+      } catch (err) {
+        if (Array.isArray(err.msg)) {
+          err.msg.forEach((error) => {
+            toast.error(error.msg[window.localStorage.getItem('academy_lang')])
+          })
+        } else {
+          toast.error(err.msg[window.localStorage.getItem('academy_lang')])
+        }
       }
     }
     myGroups();

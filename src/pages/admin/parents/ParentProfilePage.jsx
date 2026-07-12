@@ -40,7 +40,7 @@ export default function ParentProfilePage() {
     return () => { mounted = false; };
   }, [parentId]);
 
-  
+
   const handleEditSubmit = async (form) => {
     setSaving(true);
     try {
@@ -50,8 +50,13 @@ export default function ParentProfilePage() {
       toast.success(t.common.saved);
       setEditOpen(false);
     } catch (err) {
-      console.error(err);
-      toast.error(err.msg || t.common.somethingWrong);
+      if (Array.isArray(err.msg)) {
+        err.msg.forEach((error) => {
+          toast.error(error.msg[window.localStorage.getItem('academy_lang')])
+        })
+      } else {
+        toast.error(err.msg[window.localStorage.getItem('academy_lang')])
+      }
     } finally {
       setSaving(false);
     }
@@ -65,7 +70,13 @@ export default function ParentProfilePage() {
       toast.success(t.common.deleted);
       navigate("/admin/parents");
     } catch (err) {
-      toast.error(err.msg || t.common.somethingWrong);
+      if (Array.isArray(err.msg)) {
+        err.msg.forEach((error) => {
+          toast.error(error.msg[window.localStorage.getItem('academy_lang')])
+        })
+      } else {
+        toast.error(err.msg[window.localStorage.getItem('academy_lang')])
+      }
     }
   };
 

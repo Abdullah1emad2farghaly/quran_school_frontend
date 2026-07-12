@@ -66,8 +66,13 @@ export default function GroupsListPage() {
       setFormOpen(false);
       dt.refresh();
     } catch (err) {
-      console.log(err)
-      toast.error(err.message || t.common.somethingWrong);
+      if (Array.isArray(err.msg)) {
+        err.msg.forEach((error) => {
+          toast.error(error.msg[window.localStorage.getItem('academy_lang')])
+        })
+      } else {
+        toast.error(err.msg[window.localStorage.getItem('academy_lang')])
+      }
     } finally {
       setSaving(false);
     }
@@ -81,7 +86,13 @@ export default function GroupsListPage() {
       toast.success(t.common.deleted);
       dt.refresh();
     } catch (err) {
-      toast.error(err.message || t.common.somethingWrong);
+      if (Array.isArray(err.msg)) {
+        err.msg.forEach((error) => {
+          toast.error(error.msg[window.localStorage.getItem('academy_lang')])
+        })
+      } else {
+        toast.error(err.msg[window.localStorage.getItem('academy_lang')])
+      }
     }
   };
 

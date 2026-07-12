@@ -62,8 +62,13 @@ export default function TeachersListPage() {
       setFormOpen(false);
       dt.refresh();
     } catch (err) {
-      console.log(err)
-      toast.error(err.message || t.common.somethingWrong);
+      if (Array.isArray(err.msg)) {
+        err.msg.forEach((error) => {
+          toast.error(error.msg[window.localStorage.getItem('academy_lang')])
+        })
+      } else {
+        toast.error(err.msg[window.localStorage.getItem('academy_lang')])
+      }
     } finally {
       setSaving(false);
     }
@@ -77,7 +82,13 @@ export default function TeachersListPage() {
       toast.success(t.common.deleted);
       dt.refresh();
     } catch (err) {
-      toast.error(err.message || t.common.somethingWrong);
+      if (Array.isArray(err.msg)) {
+        err.msg.forEach((error) => {
+          toast.error(error.msg[window.localStorage.getItem('academy_lang')])
+        })
+      } else {
+        toast.error(err.msg[window.localStorage.getItem('academy_lang')])
+      }
     }
   };
 
@@ -106,20 +117,24 @@ export default function TeachersListPage() {
         </div>
       ),
     },
-    { key: "createdAt", label: t.teachers.createdAt, render: (row) => (
-      <div className="flex justify-center flex-col items-start">
-        <p className="tabular font-semibold">{row.createdAt.split("T")[0]}</p>
-        <p className="tabular text-gray-500">{row.createdAt.split("T")[1].split(".")[0]}</p>
-      </div>
-    ) },
-    { key: "groupsNumber", label: t.groups.groupsNumber, render: (row) => (
-      <span>
-        {row.totalGroups === 1 ? 
-        t.groups.onlyOneGroup : row.totalGroups === 2 ? 
-        t.groups.towGroups : row.totalGroups > 2 && row.totalGroups < 11 ? 
-        `${row.totalGroups} ${t.groups.groups}` : row.totalGroups >= 11 ?`${row.totalGroups} ${t.groups.group}`: `0 ${t.groups.group}` }
-      </span>
-    ) },
+    {
+      key: "createdAt", label: t.teachers.createdAt, render: (row) => (
+        <div className="flex justify-center flex-col items-start">
+          <p className="tabular font-semibold">{row.createdAt.split("T")[0]}</p>
+          <p className="tabular text-gray-500">{row.createdAt.split("T")[1].split(".")[0]}</p>
+        </div>
+      )
+    },
+    {
+      key: "groupsNumber", label: t.groups.groupsNumber, render: (row) => (
+        <span>
+          {row.totalGroups === 1 ?
+            t.groups.onlyOneGroup : row.totalGroups === 2 ?
+              t.groups.towGroups : row.totalGroups > 2 && row.totalGroups < 11 ?
+                `${row.totalGroups} ${t.groups.groups}` : row.totalGroups >= 11 ? `${row.totalGroups} ${t.groups.group}` : `0 ${t.groups.group}`}
+        </span>
+      )
+    },
     {
       key: "actions",
       label: t.common.actions,

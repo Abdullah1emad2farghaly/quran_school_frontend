@@ -6,7 +6,7 @@ import LoginPage from "../pages/LoginPage"
 export default function AuthRoute() {
     return (
         <Routes>
-            <Route path='/login' element={<AuthLayout />}>
+            <Route path='/' element={<AuthLayout />}>
                 <Route index element={<LoginPage/>}/>
             </Route>
         </Routes>

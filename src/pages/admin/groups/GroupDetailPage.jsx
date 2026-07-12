@@ -52,16 +52,22 @@ export default function GroupDetailPage() {
   }, [groupId]);
 
   const handleEditSubmit = async (form) => {
-  
+
     setSaving(true);
     try {
       const res = await groupsApi.updateGroup(groupId, form);
       console.log(res)
-      setGroup({...group, ...res.data.group, groupName: res.data.group.name});
+      setGroup({ ...group, ...res.data.group, groupName: res.data.group.name });
       toast.success(t.common.saved);
       setEditOpen(false);
     } catch (err) {
-      toast.error(err.message || t.common.somethingWrong);
+      if (Array.isArray(err.msg)) {
+        err.msg.forEach((error) => {
+          toast.error(error.msg[window.localStorage.getItem('academy_lang')])
+        })
+      } else {
+        toast.error(err.msg[window.localStorage.getItem('academy_lang')])
+      }
     } finally {
       setSaving(false);
     }
@@ -75,7 +81,13 @@ export default function GroupDetailPage() {
       toast.success(t.common.deleted);
       navigate("/admin/groups");
     } catch (err) {
-      toast.error(err.message || t.common.somethingWrong);
+      if (Array.isArray(err.msg)) {
+        err.msg.forEach((error) => {
+          toast.error(error.msg[window.localStorage.getItem('academy_lang')])
+        })
+      } else {
+        toast.error(err.msg[window.localStorage.getItem('academy_lang')])
+      }
     }
   };
 
@@ -86,7 +98,7 @@ export default function GroupDetailPage() {
     setScheduleSaving(true);
     try {
       if (editingDay) {
-        await groupsApi.updateScheduleDay(editingDay.id, {...form, groupId,});
+        await groupsApi.updateScheduleDay(editingDay.id, { ...form, groupId, });
       } else {
         await groupsApi.addScheduleDay(groupId, form);
       }
@@ -94,8 +106,13 @@ export default function GroupDetailPage() {
       setScheduleModalOpen(false);
       loadGroup();
     } catch (err) {
-      console.log(err);
-      // toast.error(err.msg || t.common.somethingWrong);
+      if (Array.isArray(err.msg)) {
+        err.msg.forEach((error) => {
+          toast.error(error.msg[window.localStorage.getItem('academy_lang')])
+        })
+      } else {
+        toast.error(err.msg[window.localStorage.getItem('academy_lang')])
+      }
     } finally {
       setScheduleSaving(false);
     }
@@ -109,8 +126,13 @@ export default function GroupDetailPage() {
       toast.success(t.common.deleted);
       loadGroup();
     } catch (err) {
-      console.log(err)
-      toast.error(err.message || t.common.somethingWrong);
+      if (Array.isArray(err.msg)) {
+        err.msg.forEach((error) => {
+          toast.error(error.msg[window.localStorage.getItem('academy_lang')])
+        })
+      } else {
+        toast.error(err.msg[window.localStorage.getItem('academy_lang')])
+      }
     }
   };
 
@@ -147,7 +169,7 @@ export default function GroupDetailPage() {
               <StatusBadge status={group.isActive} t={t} />
               <Badge tone="gold">{group?.students?.length}/{group.maxStudents} {t.groups.seats}</Badge>
             </div>
-              {group.currentSurah ? <span className="font-medium text-ink-soft">{group.currentSurah}</span> : <span className="text-ink-faint italic">{t.groups.noSurah}</span>}
+            {group.currentSurah ? <span className="font-medium text-ink-soft">{group.currentSurah}</span> : <span className="text-ink-faint italic">{t.groups.noSurah}</span>}
           </div>
           <div className="flex items-center gap-2">
             <Button variant="secondary" icon={Pencil} onClick={() => setEditOpen(true)}>{t.common.edit}</Button>

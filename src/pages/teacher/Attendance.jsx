@@ -3,6 +3,7 @@ import { Save, ClipboardCheck } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { useParams } from 'react-router-dom';
 import { createGroupAttendance } from '../../api/services/teachersService';
+import { useToast } from '../../context/ToastContext';
 
 const STATUS = ['Present', 'Absent'];
 
@@ -13,6 +14,7 @@ const statusStyle = {
 
 export default function Attendance({ students, embedded }) {
   const { showToast } = useApp();
+  const toast = useToast();
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [attendance, setAttendance] = useState([]);
   const [saved, setSaved] = useState(false);
@@ -45,7 +47,7 @@ export default function Attendance({ students, embedded }) {
     setSaved(false);
   };
 
-  let data = {groupId: id, attendances: attendance};
+  let data = { groupId: id, attendances: attendance };
   const handleSave = async (data) => {
     if (attendance.length !== students.length) {
       showToast('يرجى تسجيل الحضور لجميع الطلاب');
@@ -57,14 +59,18 @@ export default function Attendance({ students, embedded }) {
       console.log(res);
       setSaved(true);
       showToast('تم حفظ الحضور بنجاح');
-    }catch(error) {
-      console.log(error)
-      showToast('حدث خطأ أثناء حفظ الحضور');
-      return;
+    } catch (err) {
+      if (Array.isArray(err.msg)) {
+        err.msg.forEach((error) => {
+          toast.error(error.msg[window.localStorage.getItem('academy_lang')])
+        })
+      } else {
+        toast.error(err.msg[window.localStorage.getItem('academy_lang')])
+      }
     }
   };
 
-  
+
 
   const presentCount = students.filter(s => getStatus(s.id) === 'Present').length;
   const absentCount = students.filter(s => getStatus(s.id) === 'Absent').length;

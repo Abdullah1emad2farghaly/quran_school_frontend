@@ -42,8 +42,10 @@ export async function getGroup(id) {
   let res;
   try {
     res = await api.get(`/groups/${id}`)
+    console.log(res.data.data.data.group)
   } catch (error) {
-    console.log(error)
+    console.log(error.response?.data)
+    throw error.response?.data;
   }
   if (USE_MOCK) {
     return mockRequest(() => {

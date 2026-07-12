@@ -17,6 +17,7 @@ export default function App() {
               <AuthRoute/>
 
               <AdminRoutes/>
+              
               <TeacherRoutes/>
           </BrowserRouter>
         </ConfirmProvider>

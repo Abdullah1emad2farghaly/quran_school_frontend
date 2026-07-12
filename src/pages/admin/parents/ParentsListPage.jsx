@@ -31,13 +31,12 @@ export default function ParentsListPage() {
   const fetcher = useCallback((params) => parentsApi.listParents(params), []);
   const dt = useDataTable(fetcher, { pageSize: 8 });
 
-  const openCreate = () => { setEditing(null); setFormOpen(true);  randomNumber = Math.floor(100000 + Math.random() * 900000) };
+  const openCreate = () => { setEditing(null); setFormOpen(true); randomNumber = Math.floor(100000 + Math.random() * 900000) };
   const openEdit = (p) => { setEditing(p); setFormOpen(true); };
-  
-  console.log(dt.rows)
+
   const handleSubmit = async (form) => {
     setSaving(true);
-    
+
     try {
       if (editing) {
         await parentsApi.updateParent(editing.userId, form);
@@ -49,8 +48,13 @@ export default function ParentsListPage() {
       setFormOpen(false);
       dt.refresh();
     } catch (err) {
-      console.log(err)
-      toast.error(err.message || t.common.somethingWrong);
+      if (Array.isArray(err.msg)) {
+        err.msg.forEach((error) => {
+          toast.error(error.msg[window.localStorage.getItem('academy_lang')])
+        })
+      } else {
+        toast.error(err.msg[window.localStorage.getItem('academy_lang')])
+      }
     } finally {
       setSaving(false);
     }
@@ -64,10 +68,16 @@ export default function ParentsListPage() {
       toast.success(t.common.deleted);
       dt.refresh();
     } catch (err) {
-      toast.error(err.msg || t.common.somethingWrong);
+      if (Array.isArray(err.msg)) {
+        err.msg.forEach((error) => {
+          toast.error(error.msg[window.localStorage.getItem('academy_lang')])
+        })
+      } else {
+        toast.error(err.msg[window.localStorage.getItem('academy_lang')])
+      }
     }
   };
-  
+
 
   const handleExport = () => {
     exportToCSV("parents", dt.rows, [
@@ -91,18 +101,22 @@ export default function ParentsListPage() {
         </div>
       ),
     },
-    { key: "createdAt", label: t.teachers.createdAt, render: (row) => (
-      <div className="flex justify-center flex-col items-start">
-        <p className="tabular font-semibold">{row.createdAt.split("T")[0]}</p>
-        <p className="tabular text-gray-500">{row.createdAt.split("T")[1].split(".")[0]}</p>
-      </div>
-    ) },
+    {
+      key: "createdAt", label: t.teachers.createdAt, render: (row) => (
+        <div className="flex justify-center flex-col items-start">
+          <p className="tabular font-semibold">{row.createdAt.split("T")[0]}</p>
+          <p className="tabular text-gray-500">{row.createdAt.split("T")[1].split(".")[0]}</p>
+        </div>
+      )
+    },
     { key: "phone", label: t.common.phone, render: (row) => <span className="nums-ltr">{row.phone}</span> },
-    { key: "totalStudents", label: t.parents.children, render: (row) => (
-      <div>
-        <p>{row.totalStudents}</p>
-      </div>
-    ) },
+    {
+      key: "totalStudents", label: t.parents.children, render: (row) => (
+        <div>
+          <p>{row.totalStudents}</p>
+        </div>
+      )
+    },
     {
       key: "actions",
       label: t.common.actions,

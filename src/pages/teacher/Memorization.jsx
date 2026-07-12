@@ -7,6 +7,7 @@ import Badge from '../../components/teacher/ui/Badge';
 import EmptyState from '../../components/teacher/ui/EmptyState';
 import { createMemorizationAssignment, createMemorizationRecord, createRevisionAssignment } from '../../api/services/memorizationService';
 import { memorizationRecords } from '../../data';
+import { useToast } from '../../context/ToastContext';
 
 const scoreOptions = ['ممتاز', 'جيد جداً', 'جيد', 'مقبول', 'ضعيف'];
 const scoreVariant = { 'ممتاز': 'green', 'جيد جداً': 'blue', 'جيد': 'gold', 'مقبول': 'orange', 'ضعيف': 'red' };
@@ -78,8 +79,9 @@ function RecordForm2({ setEvaluation, evaluation }) {
 const emptyRecord = { surahName: null, fromAyah: null, toAyah: null };
 
 export default function Memorization({ groupId, students, embedded }) {
-
+  console.log(students);
   const { showToast, surahs } = useApp();
+  const toast = useToast();
   const [search, setSearch] = useState('');
   const [addModal, setAddModal] = useState(false);
   const [editModal, setEditModal] = useState(null);
@@ -108,19 +110,30 @@ export default function Memorization({ groupId, students, embedded }) {
       showToast('تم إضافة السجل بنجاح');
       setAddModal(false);
       setMemorization(emptyRecord);
-    }catch(error){
-      console.log(error);
-      showToast('حدث خطأ أثناء إضافة السجل', 'error');
+    }catch (err) {
+      if (Array.isArray(err.msg)) {
+        err?.msg?.forEach((error) => {
+          // console.log(error.msg['ar'])
+          toast.error(error?.msg?.[window.localStorage.getItem('academy_lang')])
+        })
+      } else {
+        toast.error(err?.msg?.[window.localStorage.getItem('academy_lang')])
+      }
     }
   };
 
   const handleEdit = async (editForm, groupId, evaluation) => {
     try {
-      const res = await createMemorizationRecord(editForm.id, groupId, evaluation)
-      console.log(res);
+      await createMemorizationRecord(editForm.id, groupId, evaluation)
       showToast("تم حفظ التقييم بنجاح");
-    }catch(error){
-      console.log(error);
+    }catch (err) {
+      if (Array.isArray(err.msg)) {
+        err.msg.forEach((error) => {
+          toast.error(error.msg[window.localStorage.getItem('academy_lang')])
+        })
+      } else {
+        toast.error(err.msg[window.localStorage.getItem('academy_lang')])
+      }
     }
   };
 
@@ -163,10 +176,10 @@ export default function Memorization({ groupId, students, embedded }) {
                 {students.map(r => (
                   <tr key={r.id} className="table-row">
                     <td className="px-4 py-3 font-semibold text-forest-900">{r.studentName}</td>
-                    <td className="px-4 py-3 text-forest-700">{r.surah}</td>
-                    <td className="px-4 py-3 text-forest-600">{r.fromAyah} - {r.toAyah}</td>
-                    <td className="px-4 py-3"><Badge variant={scoreVariant[r.score] || 'default'}>{r.score}</Badge></td>
-                    <td className="px-4 py-3 text-forest-400 text-xs">{r.date}</td>
+                    <td className="px-4 py-3 text-forest-700">{r?.lastSession?.memorization?.surahName || '---'}</td>
+                    <td className="px-4 py-3 text-forest-600">{r?.lastSession?.memorization?.fromAyah} - {r?.lastSession?.memorization?.toAyah || '---'}</td>
+                    <td className="px-4 py-3"><Badge variant={scoreVariant[r?.lastSession?.memorization?.memorizationScore] || '--'}>{r?.lastSession?.memorizationScore || '---'}</Badge></td>
+                    <td className="px-4 py-3 text-forest-400 text-xs">{new Date().toLocaleDateString()}</td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-1">
                         <button onClick={() => { setEditForm({...r}); setEditModal(true); }} className="p-1.5 hover:bg-forest-500 rounded-lg border px-4 border-forest-500 text-forest-500 hover:text-white transition-colors">

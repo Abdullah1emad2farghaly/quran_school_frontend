@@ -21,6 +21,7 @@ import axios from "axios";
 import calculateAge from "../../../utils/CalculateAge";
 import { listGroups } from "../../../api/services/groupsService";
 import { listParents } from "../../../api/services/parentsService";
+import HandleErrors from "../../../utils/HandleErrors";
 
 export default function StudentsListPage() {
   const { t, isRtl } = useI18n();
@@ -39,11 +40,11 @@ export default function StudentsListPage() {
 
   const [groups, setGroups] = useState([]);
   const [parents, setParents] = useState([]);
-  
+
   const fetcher = useCallback((params) => studentsApi.listStudents(params), []);
 
   const dt = useDataTable(fetcher, { pageSize: 8 });
-  
+
 
   const filterDefs = [
     { key: "groupId", label: t.students.filterByGroup, options: groupsLite.map((g) => ({ value: g.id, label: g.name })) },
@@ -55,7 +56,7 @@ export default function StudentsListPage() {
     setEditingStudent(null);
     setFormOpen(true);
   };
-  
+
   const openEdit = (student) => {
     setEditingStudent(student);
     setFormOpen(true);
@@ -79,7 +80,7 @@ export default function StudentsListPage() {
     setSaving(true);
     try {
       const group = groupsLite.find((g) => g.id === form.groupId);
-      const payload = { ...form, groupId: form.groupId || null};
+      const payload = { ...form, groupId: form.groupId || null };
       if (editingStudent) {
         console.log(editingStudent)
         await studentsApi.updateStudent(editingStudent.id, payload);
@@ -87,12 +88,18 @@ export default function StudentsListPage() {
       } else {
         await studentsApi.createStudent(payload);
         toast.success(t.common.created);
+
       }
       setFormOpen(false);
       dt.refresh();
     } catch (err) {
-      console.error(err); 
-      toast.error(err.message || t.common.somethingWrong);
+      if (Array.isArray(err.msg)) {
+        err.msg.forEach((error) => {
+          toast.error(error.msg[window.localStorage.getItem('academy_lang')])
+        })
+      } else {
+        toast.error(err.msg[window.localStorage.getItem('academy_lang')])
+      }
     } finally {
       setSaving(false);
     }
@@ -106,7 +113,13 @@ export default function StudentsListPage() {
       toast.success(t.common.deleted);
       dt.refresh();
     } catch (err) {
-      toast.error(err.message || t.common.somethingWrong);
+      if (Array.isArray(err.msg)) {
+        err.msg.forEach((error) => {
+          toast.error(error.msg[window.localStorage.getItem('academy_lang')])
+        })
+      } else {
+        toast.error(err.msg[window.localStorage.getItem('academy_lang')])
+      }
     }
   };
 
@@ -188,18 +201,21 @@ export default function StudentsListPage() {
           <span className="text-ink-faint italic">{t.students.noGroup}</span>
         ),
     },
-    { key: "teacherName", label: t.common.teacherName, render: (row) => 
-      row.teacherName ? (
-        <span className="tabular font-semibold text-primary-dark">{row.teacherName}</span>
-      ) : (
-        <span className="text-ink-faint italic">{t.students.noGroup}</span>
-      ) },
-    { key: "teacherPhone", label: t.common.teacherPhone, render: (row) => 
-      row.teacherPhone ? (
-        <span>{row.teacherPhone}</span> 
-      ) : (
-        <span className="text-ink-faint italic">{t.students.noGroup}</span>
-      )
+    {
+      key: "teacherName", label: t.common.teacherName, render: (row) =>
+        row.teacherName ? (
+          <span className="tabular font-semibold text-primary-dark">{row.teacherName}</span>
+        ) : (
+          <span className="text-ink-faint italic">{t.students.noGroup}</span>
+        )
+    },
+    {
+      key: "teacherPhone", label: t.common.teacherPhone, render: (row) =>
+        row.teacherPhone ? (
+          <span>{row.teacherPhone}</span>
+        ) : (
+          <span className="text-ink-faint italic">{t.students.noGroup}</span>
+        )
     },
     {
       key: "actions",

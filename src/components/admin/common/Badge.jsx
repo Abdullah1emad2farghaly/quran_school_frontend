@@ -49,5 +49,6 @@ export function CompetitionStatusBadge({ status, t }) {
 
 export function AttendanceBadge({ status, t }) {
   const toneMap = { present: "green", absent: "rose", late: "amber", excused: "sky" };
-  return <Badge tone={toneMap[status] || "neutral"}>{t.attendance[status] || status}</Badge>;
+  console.log(status)
+  return <Badge tone={toneMap[status.toLowerCase()] || "neutral"}>{t.attendance[status] || status}</Badge>;
 }

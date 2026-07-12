@@ -81,7 +81,13 @@ export default function StudentProfilePage() {
       toast.success(t.common.saved);
       setEditOpen(false);
     } catch (err) {
-      toast.error(err.message || t.common.somethingWrong);
+      if (Array.isArray(err.msg)) {
+        err.msg.forEach((error) => {
+          toast.error(error.msg[window.localStorage.getItem('academy_lang')])
+        })
+      } else {
+        toast.error(err.msg[window.localStorage.getItem('academy_lang')])
+      }
     } finally {
       setSaving(false);
     }
@@ -95,7 +101,13 @@ export default function StudentProfilePage() {
       toast.success(t.common.deleted);
       navigate("/students");
     } catch (err) {
-      toast.error(err.message || t.common.somethingWrong);
+      if (Array.isArray(err.msg)) {
+        err.msg.forEach((error) => {
+          toast.error(error.msg[window.localStorage.getItem('academy_lang')])
+        })
+      } else {
+        toast.error(err.msg[window.localStorage.getItem('academy_lang')])
+      }
     }
   };
 
@@ -133,7 +145,7 @@ export default function StudentProfilePage() {
             <Avatar name={student.name} size="xl" />
             <div>
               <h1 className="text-xl font-extrabold text-ink">{student.name}</h1>
-              <p className="text-sm text-ink-faint mt-0.5">{t.students.profile} · {student.id.toString().padStart(4,'0')}-S</p>
+              <p className="text-sm text-ink-faint mt-0.5">{t.students.profile} · {student.id.toString().padStart(4, '0')}-S</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -206,7 +218,7 @@ export default function StudentProfilePage() {
                   r.sessionId && (
                     <li key={r.attendanceId} className="flex items-center justify-between px-5 py-3.5">
                       <span className="text-sm font-medium text-ink-soft nums-ltr">{formatDate(r.date)}</span>
-                      <AttendanceBadge status={r.status} t={t} />
+                      <AttendanceBadge status={r.status.toLowerCase()} t={t} />
                     </li>
                   )
                 ))}
